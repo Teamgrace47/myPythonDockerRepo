@@ -13,8 +13,8 @@ spec:
         app: my-python-app
     spec:
       containers:
-      - name: mypythondockerrepo
-        image: oloffcontainerregistry.azurecr.io/mypythondockerrepo
+      - name: mypythonapp
+        image: oloffcontainerregistry.azurecr.io/mypythonapp:latest
         ports:
         - containerPort: 5000
 # service type loadbalancer       
