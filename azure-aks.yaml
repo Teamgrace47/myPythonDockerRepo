@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mypythonapp-deployment
+  name: my-python-deployment
 spec:
   replicas: 2
   selector:
@@ -13,8 +13,8 @@ spec:
         app: my-python-app
     spec:
       containers:
-      - name: mypythonapp
-        image: oloffcontainerregistry.azurecr.io/Teamgrace47/mypythonappRepo:#{Build.BuildId}#
+      - name: mypythondockerrepo
+        image: oloffcontainerregistry.azurecr.io/Teamgrace47/mypythondockerrepo
         ports:
         - containerPort: 5000
 # service type loadbalancer       
@@ -22,7 +22,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mypythonapp-svc
+  name: my-python-app-svc
 spec:
   selector:
     app: my-python-app
