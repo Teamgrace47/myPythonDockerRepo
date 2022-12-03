@@ -13,7 +13,7 @@ spec:
         app: my-python-app
     spec:
       containers:
-      - name: mypythondockerrepo
+      - name: myPythonDockerRepo
         image: oloffcontainerregistry.azurecr.io/Teamgrace47/myPythonDockerRepo:#{Build.BuildId}#
         ports:
         - containerPort: 5000
