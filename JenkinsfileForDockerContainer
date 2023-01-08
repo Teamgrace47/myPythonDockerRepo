@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+    
+    environment {
+        registry = "261193864225.dkr.ecr.us-east-1.amazonaws.com/docker-repo"
+    }
+
+    stages {
+        stage('checkout') {
+            steps {
+              checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'e72dffdf-fc73-4517-9f09-b1a558eaf39c', url: 'https://github.com/Teamgrace47/myPythonDockerRepo']])
+            }
+            
+        }
+     // Building Docker images 
+        stage("buliding images") {
+            steps{
+                script{
+                  dockerImage = docker.build registry
+                }
+            }
+        }
+     // Uploading Docker images into AWS ECR
+        stage("pushing to ECR") {
+            steps{
+                script{
+                    sh "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 261193864225.dkr.ecr.us-east-1.amazonaws.com"
+                    sh "docker push 261193864225.dkr.ecr.us-east-1.amazonaws.com/docker-repo:latest"
+                    
+                }
+            }
+        }
+     // Stopping Docker containers for cleaner Docker run
+        stage("stop previous contianers") {
+            steps{
+             sh 'docker ps -f name=mypythonContainer -q | xargs --no-run-if-empty docker container stop'
+             sh 'docker container ls -a -fname=mypythonContainer -q | xargs -r docker container rm'
+            }
+        }
+        
+        stage("docker run") {
+            steps {
+                script{
+                     sh 'docker run -d -p 8096:5000 --rm --name mypythonContainer 261193864225.dkr.ecr.us-east-1.amazonaws.com/docker-repo:latest'
+                }
+            }
+        }
+        
+        
+        
+        
+        
+    }
+}
